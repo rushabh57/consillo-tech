@@ -31,7 +31,7 @@ export default function Navbar() {
           src={logo}
           alt="consilo_logo"
           id="logo-img"
-          className="w-34 h-[160px]      object-cover cursor-pointer"
+          className="w-34 h-[160px] dark:invert dark:grayscale-100     object-cover cursor-pointer"
         />
       </div>
 

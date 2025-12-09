@@ -4,7 +4,6 @@ import About from "@/components/About"
 import WhatWeDo from "@/components/WhatWeDo"
 import Partners from "@/components/Partners"
 import FAQ from "@/components/FAQ"
-import Contact from "@/components/Contact"
 import Footer from "@/components/Footer"
 
 
@@ -17,7 +16,6 @@ export default function LandingPage() {
       <WhatWeDo />
       <Partners />
       <FAQ />
-      <Contact />
       <Footer />
       {/* 
        */}

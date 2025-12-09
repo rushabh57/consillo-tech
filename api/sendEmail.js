@@ -1,14 +1,16 @@
 // api/sendEmail.js
-
 import { Resend } from "resend";
 
-export async function POST(req) {
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
   try {
-    const { name, email, message } = await req.json();
+    const { name, email, message } = req.body;
 
-    const resend = new Resend(process.env.VITE_RESEND_API_KEY);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Send to admin
     await resend.emails.send({
       from: "ConsiloTech <noreply@yourdomain.com>",
       to: "your-email@domain.com",
@@ -20,7 +22,6 @@ export async function POST(req) {
       `,
     });
 
-    // Send thank-you mail
     await resend.emails.send({
       from: "ConsiloTech <noreply@yourdomain.com>",
       to: email,
@@ -31,8 +32,9 @@ export async function POST(req) {
       `,
     });
 
-    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    return res.status(200).json({ ok: true });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.log("Email error:", err);
+    return res.status(500).json({ error: err.message });
   }
 }

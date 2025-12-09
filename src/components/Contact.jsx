@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "toast-face";
-import { db, collection, addDoc } from "../lib/firebase";
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
@@ -27,30 +26,16 @@ export default function Contact() {
     try {
       setLoading(true);
 
-      // 1️⃣ Store message in Firestore
-      await addDoc(collection(db, "contact_msgs"), { name, email, message, createdAt: new Date() });
-
-      // 2️⃣ Send thank-you email via Resend API
-      const response = await fetch("https://api.resend.com/emails", {
+      // 1️⃣ SEND EMAIL TO YOU (ADMIN)
+      await fetch("/api/sendEmail", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-          from: "Your Company <noreply@yourdomain.com>",
-          to: email,
-          subject: "Thanks for contacting us!",
-          html: `<h2>Hi ${name},</h2><p>We received your message and will get back to you soon.</p><br/><p>Regards,<br/>Team</p>`,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message })
       });
-
-      if (!response.ok) throw new Error("Failed to send email");
-
+      
       toast.success("Message sent successfully!");
       e.currentTarget.reset();
     } catch (err) {
-      console.error(err);
       toast.error(err.message || "Something went wrong!");
     } finally {
       setLoading(false);
